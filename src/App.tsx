@@ -8,7 +8,10 @@ function App() {
   const [showCheat, setShowCheat] = useState(false);
 
   const result = useMemo(() => extractMatches(pattern, flags, testStr), [pattern, flags, testStr]);
-  const explanation = useMemo(() => pattern ? explainPattern(pattern) : [], [pattern]);
+  // Флаги передаются в разбор не для красоты: m меняет смысл ^ и $, s — смысл
+  // точки, u включает \p{...}. Без них объяснение было бы догадкой.
+  const explanation = useMemo(() => pattern ? explainPattern(pattern, flags) : [], [pattern, flags]);
+  const unparsedCount = useMemo(() => explanation.filter(p => !p.parsed).length, [explanation]);
 
   const toggleFlag = (f: string) => setFlags(prev => prev.includes(f) ? prev.replace(f, '') : prev + f);
 
@@ -42,7 +45,10 @@ function App() {
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">Flags</label>
             <div className="flex gap-2">
-              {['g', 'i', 'm'].map(f => (
+              {/* s и u влияют на разбор паттерна (точка и \p{...}), поэтому их
+                  нельзя было оставлять недоступными — иначе объяснение
+                  описывало бы режим, который невозможно включить. */}
+              {['g', 'i', 'm', 's', 'u'].map(f => (
                 <button key={f} onClick={() => toggleFlag(f)} className={`px-3 py-2 rounded-lg text-sm font-mono font-bold ${flags.includes(f) ? 'bg-orange-600' : 'bg-gray-800'}`}>{f}</button>
               ))}
             </div>
@@ -77,16 +83,28 @@ function App() {
         )}
         {explanation.length > 0 && (
           <div>
-            <h2 className="text-sm font-medium text-gray-400 mb-2">Pattern Explanation</h2>
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-              <div className="flex flex-wrap gap-2">
-                {explanation.map((part, i) => (
-                  <div key={i} className="bg-gray-800 rounded px-2 py-1">
-                    <span className="text-orange-400 font-mono text-sm">{part.token}</span>
-                    <span className="text-gray-400 text-xs ml-1">{part.description}</span>
-                  </div>
-                ))}
-              </div>
+            <h2 className="text-sm font-medium text-gray-400 mb-2">
+              Pattern Explanation
+              {unparsedCount > 0 && (
+                <span className="ml-2 text-amber-400 font-normal">
+                  — {unparsedCount} part{unparsedCount === 1 ? '' : 's'} could not be parsed
+                </span>
+              )}
+            </h2>
+            <div className="bg-gray-900 border border-gray-800 rounded-lg divide-y divide-gray-800">
+              {explanation.map((part, i) => (
+                <div key={i} className="flex gap-3 px-4 py-2 items-baseline">
+                  {/* Отступ показывает вложенность в группы — иначе на длинных
+                      паттернах непонятно, к чему относится альтернатива. */}
+                  <span style={{ marginLeft: `${part.depth * 0.9}rem` }}
+                        className={`font-mono text-sm shrink-0 rounded px-1.5 py-0.5 ${part.parsed ? 'bg-gray-800 text-orange-400' : 'bg-amber-500/15 text-amber-400'}`}>
+                    {part.token}
+                  </span>
+                  <span className={`text-xs ${part.parsed ? 'text-gray-400' : 'text-amber-400'}`}>
+                    {part.description}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -97,11 +115,11 @@ function App() {
               {CHEAT_SHEET.map(cat => (
                 <div key={cat.category} className="bg-gray-900 border border-gray-800 rounded-lg p-4">
                   <h3 className="text-orange-400 font-medium mb-2">{cat.category}</h3>
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     {cat.items.map(item => (
-                      <div key={item.token} className="flex justify-between text-sm">
-                        <span className="font-mono text-white">{item.token}</span>
-                        <span className="text-gray-400">{item.description}</span>
+                      <div key={item.token} className="text-sm">
+                        <span className="font-mono text-white bg-gray-800 rounded px-1.5 py-0.5">{item.token}</span>
+                        <div className="text-gray-400 text-xs mt-1">{item.description}</div>
                       </div>
                     ))}
                   </div>

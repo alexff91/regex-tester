@@ -59,8 +59,13 @@ describe('explainPattern', () => {
     expect(parts[0].description).toContain('Start');
   });
   it('explains literal chars', () => {
+    // Раньше здесь ожидались три отдельных куска. Подряд идущий текст теперь
+    // склеивается в один — читать «Literal text "abc"» проще, чем три чипа
+    // подряд, и это по-прежнему правда. Подробный разбор — в regex-explain.test.ts.
     const parts = explainPattern('abc');
-    expect(parts).toHaveLength(3);
+    expect(parts).toHaveLength(1);
+    expect(parts[0].token).toBe('abc');
+    expect(parts[0].description).toMatch(/literal text "abc"/);
   });
 });
 
