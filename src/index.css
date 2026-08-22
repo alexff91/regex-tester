@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+/* Mobile first: on phones and on any coarse pointer, everything a finger can hit
+   is at least 44px tall, and text fields are 16px so iOS does not zoom the page
+   on focus. A mouse-driven desktop does not match and keeps its own sizing.
+   Width is deliberately not forced here: a flex item with an explicit min-width
+   loses its automatic min-content floor and starts clipping its own label. The
+   few controls that are too narrow get their width where they are declared. */
+@media (max-width: 767px), (pointer: coarse) {
+  button,
+  select,
+  [role="button"] {
+    min-height: 44px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+  input[type="range"] {
+    min-height: 44px;
+  }
+}

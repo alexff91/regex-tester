@@ -31,7 +31,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       <header className="border-b border-gray-800 p-4">
-        <div className="mx-auto max-w-5xl flex items-center justify-between">
+        <div className="mx-auto max-w-5xl flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">Regex Tester</h1>
           <button onClick={() => setShowCheat(!showCheat)} className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg text-sm">{showCheat ? 'Hide' : 'Show'} Cheat Sheet</button>
         </div>
@@ -49,7 +49,8 @@ function App() {
                   нельзя было оставлять недоступными — иначе объяснение
                   описывало бы режим, который невозможно включить. */}
               {['g', 'i', 'm', 's', 'u'].map(f => (
-                <button key={f} onClick={() => toggleFlag(f)} className={`px-3 py-2 rounded-lg text-sm font-mono font-bold ${flags.includes(f) ? 'bg-orange-600' : 'bg-gray-800'}`}>{f}</button>
+                <button key={f} onClick={() => toggleFlag(f)} aria-pressed={flags.includes(f)}
+                  className={`px-3 py-2 min-w-11 md:min-w-0 rounded-lg text-sm font-mono font-bold ${flags.includes(f) ? 'bg-orange-600' : 'bg-gray-800'}`}>{f}</button>
               ))}
             </div>
           </div>
