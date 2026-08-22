@@ -91,6 +91,16 @@ function App() {
                 </span>
               )}
             </h2>
+            {/* Разбор знает не все правила движка: под флагом u строгость выше
+                (например, `a{` и `\q` там уже ошибки), а повтор имени группы он
+                не ловит вовсе. Если движок паттерн отверг, а придраться нам было
+                не к чему, панель обязана сказать об этом сама, а не молча
+                показывать разбор, который выглядит благополучным. */}
+            {!result.isValid && unparsedCount === 0 && (
+              <div className="mb-2 text-xs text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2">
+                The engine rejects this pattern, but the breakdown below could not tell which part is at fault — read it with that in mind.
+              </div>
+            )}
             <div className="bg-gray-900 border border-gray-800 rounded-lg divide-y divide-gray-800">
               {explanation.map((part, i) => (
                 <div key={i} className="flex gap-3 px-4 py-2 items-baseline">
