@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://regex.alftech.space/sitemap.xml

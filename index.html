@@ -3,10 +3,129 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Regex Tester</title>
+    <title>Regex Tester — matches as you type, and the pattern explained</title>
+    <meta name="description" content="Test a regular expression in your browser: matches highlighted as you type, each with its index and capture groups, plus a breakdown of what every part of the pattern means. Nothing is sent to a server." />
+    <link rel="canonical" href="https://regex.alftech.space/" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="alftech" />
+    <meta property="og:title" content="Regex Tester — matches as you type, and the pattern explained" />
+    <meta property="og:description" content="Matches highlighted as you type, each with its index and capture groups, and a breakdown of what every part of the pattern means. Runs entirely in your browser." />
+    <meta property="og:url" content="https://regex.alftech.space/" />
+    <meta property="og:image" content="https://regex.alftech.space/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="The regex tester with a pattern typed in and two matches highlighted in the test string." />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Regex Tester — matches as you type, and the pattern explained" />
+    <meta name="twitter:description" content="Matches highlighted as you type, each with its index and capture groups, and a breakdown of what every part of the pattern means. Runs entirely in your browser." />
+    <meta name="twitter:image" content="https://regex.alftech.space/og.png" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Regex Tester",
+      "url": "https://regex.alftech.space/",
+      "description": "Test a regular expression in your browser: matches highlighted as you type, each with its index and capture groups, and a breakdown of what every part of the pattern means. Nothing is sent to a server.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any browser",
+      "inLanguage": "en",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+    }
+    </script>
+
+    <!-- Styles for the static section below the app. The app itself is styled by
+         Tailwind from the bundle; this section has to stand on its own, because
+         it is the only thing on the page before any JavaScript runs. -->
+    <style>
+      body { background: #030712; }
+      .si { background: #030712; color: #d1d5db; border-top: 1px solid #1f2937;
+        font: 16px/1.65 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+      .si-wrap { max-width: 64rem; margin: 0 auto; padding: 28px 18px 56px; }
+      .si h2 { color: #fb923c; font-size: 20px; line-height: 1.3; margin: 0 0 12px; }
+      .si h3 { color: #f3f4f6; font-size: 17px; margin: 28px 0 10px; }
+      .si p { margin: 0 0 14px; max-width: 68ch; }
+      /* Tailwind's reset strips list markers from every ul on the page; this
+         section is prose and needs them back. */
+      .si ul { margin: 0 0 14px; padding-left: 22px; max-width: 68ch; list-style: disc; }
+      .si li { margin-bottom: 8px; display: list-item; }
+      .si li::marker { color: #6b7280; }
+      .si b { color: #f3f4f6; font-weight: 600; }
+      .si em { color: #fbbf24; font-style: normal; }
+      .si code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 14px; background: #111827; border: 1px solid #1f2937;
+        border-radius: 5px; padding: 1px 5px; color: #fdba74; }
+      /* A long sample line must scroll inside its own box, never push the page
+         sideways on a phone. */
+      .si pre { background: #111827; border: 1px solid #1f2937; border-radius: 8px;
+        padding: 12px 14px; overflow-x: auto; margin: 0 0 14px; }
+      .si pre code { background: none; border: 0; padding: 0; white-space: pre; }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+
+    <section class="si">
+      <div class="si-wrap">
+        <h2>What this regex tester does</h2>
+        <p>
+          You wrote a regular expression and it is not catching what it should. Type the
+          pattern above and the matches appear as you type — highlighted inside your test
+          string, and listed underneath with the position each one starts at and the text
+          of every capture group.
+        </p>
+        <p>
+          Below that the pattern is taken apart and each piece is explained in plain words,
+          indented to show what sits inside which group. Anything the breakdown could not
+          work out is labelled <em>could not be parsed</em> rather than passed off as
+          understood; and when the engine rejects a pattern while the breakdown found
+          nothing to complain about, it says so instead of showing a tidy explanation of a
+          broken pattern.
+        </p>
+        <p>
+          Everything happens in the page. The matching is done by your own browser's regular
+          expression engine, so neither the pattern nor the text you test it against is sent
+          anywhere.
+        </p>
+
+        <h3>What it handles</h3>
+        <ul>
+          <li>
+            <b>The flags g, i, m, s and u</b> — and they feed the explanation too, because
+            <code>m</code> changes what <code>^</code> and <code>$</code> mean,
+            <code>s</code> changes what <code>.</code> means, and <code>u</code> turns on
+            <code>\p{...}</code>.
+          </li>
+          <li>
+            <b>Highlighted matches with a count</b>, so it is obvious at a glance when a
+            pattern is catching more than you meant.
+          </li>
+          <li>
+            <b>Match details</b> — the matched text, the index it starts at, and each
+            capture group listed separately.
+          </li>
+          <li>
+            <b>A cheat sheet</b> of 42 tokens in eight groups: anchors, character classes,
+            sets, quantifiers, groups, lookaround, escapes and flags.
+          </li>
+        </ul>
+
+        <h3>An example</h3>
+        <p>The pattern <code>(\w+)@(\w+)\.(\w+)</code> with the <code>g</code> flag, against:</p>
+        <pre><code>write to ann@example.com or bob@test.org</code></pre>
+        <p>
+          gives two matches — <code>ann@example.com</code> at index 9 and
+          <code>bob@test.org</code> at index 28 — each with three capture groups: the name,
+          the domain and the suffix.
+        </p>
+      </div>
+    </section>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
