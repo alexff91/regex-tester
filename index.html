@@ -24,7 +24,44 @@
     <meta name="twitter:description" content="Matches highlighted as you type, each with its index and capture groups, and a breakdown of what every part of the pattern means. Runs entirely in your browser." />
     <meta name="twitter:image" content="https://regex.alftech.space/og.png" />
 
-    <script type="application/ld+json">
+    <script>
+/* Маячок «инструментом воспользовались». Открытая страница — ещё не польза:
+   считается момент, когда человек забрал результат — скопировал его или
+   скачал файл. Один GET /_used за сессию, в обычный лог доступа; никаких
+   кук, никаких внешних сервисов, ничего о самом результате. */
+(function () {
+  var sent = false;
+  window.markToolUsed = function () {
+    if (sent) return;
+    sent = true;
+    try {
+      if (!(navigator.sendBeacon && navigator.sendBeacon('/_used'))) {
+        fetch('/_used', { keepalive: true });
+      }
+    } catch (error) { /* счётчик не важнее инструмента */ }
+  };
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      var write = navigator.clipboard.writeText.bind(navigator.clipboard);
+      navigator.clipboard.writeText = function (text) {
+        window.markToolUsed();
+        return write(text);
+      };
+    }
+  } catch (error) { /* нет клипборда — останутся скачивания */ }
+  document.addEventListener('click', function (event) {
+    var node = event.target;
+    while (node && node.tagName) {
+      if (node.tagName === 'A' && node.hasAttribute('download')) {
+        window.markToolUsed();
+        break;
+      }
+      node = node.parentNode;
+    }
+  }, true);
+})();
+</script>
+<script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
@@ -65,10 +102,26 @@
       .si pre { background: #111827; border: 1px solid #1f2937; border-radius: 8px;
         padding: 12px 14px; overflow-x: auto; margin: 0 0 14px; }
       .si pre code { background: none; border: 0; padding: 0; white-space: pre; }
+
+      /* A quiet block under everything: what the page does with what you type,
+         what could be wrong with it, and where to write. */
+      .sf { border-top: 1px solid #1f2937; color: #6b7280;
+        font: 15px/1.6 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+      .sf-wrap { max-width: 64rem; margin: 0 auto; padding: 14px 18px 18px; }
+      .sf p { margin: 0; max-width: 68ch; }
+      /* The addresses get a row to themselves. A link is a tap target like any
+         other, so each one is a 44px-tall box; sitting mid-sentence those boxes
+         push the prose lines apart and the paragraph reads ragged. On their own
+         row every line is 44px anyway and nothing looks out of place. */
+      .sf-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0 10px; }
+      .sf a { color: #9ca3af; display: inline-flex; align-items: center; min-height: 44px;
+        text-decoration: underline; text-decoration-color: #374151; text-underline-offset: 3px; }
+      .sf a:hover { color: #fb923c; text-decoration-color: #fb923c; }
     </style>
   </head>
   <body>
     <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
 
     <section class="si">
       <div class="si-wrap">
@@ -126,6 +179,44 @@
       </div>
     </section>
 
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- Static, like the section above it: a person who wants to report a wrong
+         explanation should not have to wait for a bundle to load to find the
+         address. The @ is written as a numeric entity — the browser resolves it
+         before it builds the link, so the mailto works and the text copies
+         normally, while the plain name@host pattern a harvester greps the raw
+         HTML for is not sitting there to be found. -->
+    <footer class="sf">
+      <div class="sf-wrap">
+        <p>
+          Nothing you type here leaves the page: the matching is your own browser's
+          regular expression engine, and there is no server to send a pattern to.
+          That also says where a mistake could be — the matches are as right as your
+          browser is, but the plain-words breakdown under them is hand-written. If it
+          explains a token wrongly, or a pattern behaves here differently from how it
+          behaves in your code, write to me.
+        </p>
+        <p class="sf-row">
+          <a href="mailto:a&#64;alftech.space?subject=Regex%20Tester">a&#64;alftech.space</a>
+          <span>·</span>
+          <a href="https://alftech.space/">alftech.space</a><span class="sf-tip"></span>
+        </p>
+      </div>
+        <p>New tools and what changed in them: <a href="https://t.me/alftechnologies" target="_blank" rel="noopener">@alftechnologies</a>.</p>
+  </footer>
+    <script>
+      /* Donations. There is no account to send anything to yet, so this is empty
+         and the line renders nothing — better than a link that goes nowhere.
+         Putting the donation page's URL in this one string is the single edit
+         that switches the line on. */
+      var SF_TIP_URL = '';
+      if (SF_TIP_URL) {
+        var sfLink = document.createElement('a');
+        sfLink.href = SF_TIP_URL;
+        sfLink.rel = 'noopener';
+        sfLink.textContent = 'buy me a coffee';
+        document.querySelector('.sf-tip').append(' · ', sfLink);
+      }
+    </script>
+
   </body>
 </html>
