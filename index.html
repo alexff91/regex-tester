@@ -76,48 +76,8 @@
     }
     </script>
 
-    <!-- Styles for the static section below the app. The app itself is styled by
-         Tailwind from the bundle; this section has to stand on its own, because
-         it is the only thing on the page before any JavaScript runs. -->
-    <style>
-      body { background: #030712; }
-      .si { background: #030712; color: #d1d5db; border-top: 1px solid #1f2937;
-        font: 16px/1.65 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
-      .si-wrap { max-width: 64rem; margin: 0 auto; padding: 28px 18px 56px; }
-      .si h2 { color: #fb923c; font-size: 20px; line-height: 1.3; margin: 0 0 12px; }
-      .si h3 { color: #f3f4f6; font-size: 17px; margin: 28px 0 10px; }
-      .si p { margin: 0 0 14px; max-width: 68ch; }
-      /* Tailwind's reset strips list markers from every ul on the page; this
-         section is prose and needs them back. */
-      .si ul { margin: 0 0 14px; padding-left: 22px; max-width: 68ch; list-style: disc; }
-      .si li { margin-bottom: 8px; display: list-item; }
-      .si li::marker { color: #6b7280; }
-      .si b { color: #f3f4f6; font-weight: 600; }
-      .si em { color: #fbbf24; font-style: normal; }
-      .si code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: 14px; background: #111827; border: 1px solid #1f2937;
-        border-radius: 5px; padding: 1px 5px; color: #fdba74; }
-      /* A long sample line must scroll inside its own box, never push the page
-         sideways on a phone. */
-      .si pre { background: #111827; border: 1px solid #1f2937; border-radius: 8px;
-        padding: 12px 14px; overflow-x: auto; margin: 0 0 14px; }
-      .si pre code { background: none; border: 0; padding: 0; white-space: pre; }
-
-      /* A quiet block under everything: what the page does with what you type,
-         what could be wrong with it, and where to write. */
-      .sf { border-top: 1px solid #1f2937; color: #6b7280;
-        font: 15px/1.6 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
-      .sf-wrap { max-width: 64rem; margin: 0 auto; padding: 14px 18px 18px; }
-      .sf p { margin: 0; max-width: 68ch; }
-      /* The addresses get a row to themselves. A link is a tap target like any
-         other, so each one is a 44px-tall box; sitting mid-sentence those boxes
-         push the prose lines apart and the paragraph reads ragged. On their own
-         row every line is 44px anyway and nothing looks out of place. */
-      .sf-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0 10px; }
-      .sf a { color: #9ca3af; display: inline-flex; align-items: center; min-height: 44px;
-        text-decoration: underline; text-decoration-color: #374151; text-underline-offset: 3px; }
-      .sf a:hover { color: #fb923c; text-decoration-color: #fb923c; }
-    </style>
+    <link rel="preload" href="/fonts/manrope-600-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/dm-mono-500-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   </head>
   <body>
     <div id="root"></div>

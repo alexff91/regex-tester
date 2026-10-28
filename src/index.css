@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "./workbench.css";
+:root { --acc: #ffd84a; --acc-ink: #0b1622; }
 
 /* Mobile first: on phones and on any coarse pointer, everything a finger can hit
    is at least 44px tall, and text fields are 16px so iOS does not zoom the page
