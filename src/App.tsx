@@ -43,8 +43,7 @@ function App() {
         </nav>
       </header>
       <main className="wb-main">
-        <div className="wb-eyebrow">Regex tester · runs in your browser</div>
-        <h1 className="wb-h1">Your pattern, <em>explained</em> as you type.</h1>
+        <h1 className="wb-h1" style={{ marginTop: 0 }}><span className="wb-eyebrow" style={{ display: 'block', marginBottom: 10 }}>Regex tester · runs in your browser</span>Your pattern, <em>explained</em> as you type.</h1>
         <p className="wb-lede">Matches are highlighted in the text below, listed with their index and groups, and every token of the pattern is spelled out in plain words.</p>
 
         <div className="wb-stack">
